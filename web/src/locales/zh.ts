@@ -62,7 +62,7 @@ export default {
     },
     header: {
       knowledgeBase: '知识库',
-      chat: '聊天',
+      chat: '文书生成',
       register: '注册',
       signin: '登录',
       home: '首页',
