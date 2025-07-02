@@ -62,7 +62,7 @@ export default {
     },
     header: {
       knowledgeBase: 'Knowledge Base',
-      chat: 'Chat',
+      chat: 'Document Generation',
       register: 'Register',
       signin: 'Sign in',
       home: 'Home',
