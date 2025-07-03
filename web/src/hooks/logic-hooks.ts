@@ -1,6 +1,5 @@
 import { Authorization } from '@/constants/authorization';
 import { MessageType } from '@/constants/chat';
-import { LanguageTranslationMap } from '@/constants/common';
 import { ResponseType } from '@/interfaces/database/base';
 import { IAnswer, Message } from '@/interfaces/database/chat';
 import { IKnowledgeFile } from '@/interfaces/database/knowledge';
@@ -56,10 +55,9 @@ export const useChangeLanguage = () => {
   const { saveSetting } = useSaveSetting();
 
   const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(
-      LanguageTranslationMap[lng as keyof typeof LanguageTranslationMap],
-    );
-    saveSetting({ language: lng });
+    // 强制只允许中文，忽略其他语言切换请求
+    i18n.changeLanguage('zh');
+    saveSetting({ language: 'Chinese' }); // 保存为中文
   };
 
   return changeLanguage;

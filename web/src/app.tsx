@@ -3,11 +3,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { App, ConfigProvider, ConfigProviderProps, theme } from 'antd';
 import pt_BR from 'antd/lib/locale/pt_BR';
+import deDE from 'antd/locale/de_DE';
 import enUS from 'antd/locale/en_US';
 import vi_VN from 'antd/locale/vi_VN';
 import zhCN from 'antd/locale/zh_CN';
 import zh_HK from 'antd/locale/zh_HK';
-import deDE from 'antd/locale/de_DE';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -43,13 +43,14 @@ type Locale = ConfigProviderProps['locale'];
 function Root({ children }: React.PropsWithChildren) {
   const { theme: themeragflow } = useTheme();
   const getLocale = (lng: string) =>
-    AntLanguageMap[lng as keyof typeof AntLanguageMap] ?? enUS;
+    AntLanguageMap[lng as keyof typeof AntLanguageMap] ?? zhCN;
 
-  const [locale, setLocal] = useState<Locale>(getLocale(storage.getLanguage()));
+  // 强制使用中文locale
+  const [locale, setLocal] = useState<Locale>(zhCN);
 
   i18n.on('languageChanged', function (lng: string) {
-    storage.setLanguage(lng);
-    setLocal(getLocale(lng));
+    // 强制保持中文locale，忽略语言变化
+    setLocal(zhCN);
   });
 
   return (
@@ -75,11 +76,23 @@ function Root({ children }: React.PropsWithChildren) {
 
 const RootProvider = ({ children }: React.PropsWithChildren) => {
   useEffect(() => {
-    // Because the language is saved in the backend, a token is required to obtain the api. However, the login page cannot obtain the language through the getUserInfo api, so the language needs to be saved in localstorage.
-    const lng = storage.getLanguage();
-    if (lng) {
-      i18n.changeLanguage(lng);
-    }
+    // 强制设置为中文，不依赖任何外部设置
+    storage.setLanguage('zh');
+    i18n.changeLanguage('zh');
+
+    // 监听语言变化，如果不是中文则强制改回中文
+    const handleLanguageChange = (lng: string) => {
+      if (lng !== 'zh') {
+        storage.setLanguage('zh');
+        i18n.changeLanguage('zh');
+      }
+    };
+
+    i18n.on('languageChanged', handleLanguageChange);
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
   }, []);
 
   return (

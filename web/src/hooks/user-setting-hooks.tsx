@@ -1,4 +1,3 @@
-import { LanguageTranslationMap } from '@/constants/common';
 import { ResponseGetType } from '@/interfaces/database/base';
 import { IToken } from '@/interfaces/database/chat';
 import { ITenantInfo } from '@/interfaces/database/knowledge';
@@ -35,11 +34,8 @@ export const useFetchUserInfo = (): ResponseGetType<IUserInfo> => {
     queryFn: async () => {
       const { data } = await userService.user_info();
       if (data.code === 0) {
-        i18n.changeLanguage(
-          LanguageTranslationMap[
-            data.data.language as keyof typeof LanguageTranslationMap
-          ],
-        );
+        // 强制保持中文，不使用后端返回的语言设置
+        i18n.changeLanguage('zh');
       }
       return data?.data ?? {};
     },

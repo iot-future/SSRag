@@ -47,9 +47,8 @@ const ChatContainer = () => {
       : useFetchNextConversationSSE;
   }, [from]);
   React.useEffect(() => {
-    if (locale && i18n.language !== locale) {
-      i18n.changeLanguage(locale);
-    }
+    // 强制使用中文，忽略URL参数中的locale设置
+    i18n.changeLanguage('zh');
   }, [locale, visibleAvatar]);
   const { data: avatarData } = useFetchAvatar();
 

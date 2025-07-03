@@ -60,11 +60,13 @@ i18n
   .use(LanguageDetector)
   .init({
     detection: {
+      order: ['localStorage'], // 移除navigator，只从localStorage读取
       lookupLocalStorage: 'lng',
     },
     supportedLngs: Object.values(LanguageAbbreviation),
     resources,
-    fallbackLng: 'en',
+    fallbackLng: 'zh',
+    lng: 'zh', // 设置默认语言为中文
     interpolation: {
       escapeValue: false,
     },
